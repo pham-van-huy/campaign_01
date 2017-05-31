@@ -63,6 +63,7 @@
     {{-- end Window-popup-CHAT for responsive min-width: 768px --}}
 
     {{-- jQuery, Bootstrap, Vuejs... --}}
+
     {!! Html::script(mix('frontend/js/app.js')) !!}
     {{-- Js effects for material design. + Tooltips --}}
     {!! Html::script(asset('frontend/js/material.min.js')) !!}

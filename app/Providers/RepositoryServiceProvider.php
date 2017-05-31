@@ -18,7 +18,11 @@ class RepositoryServiceProvider extends ServiceProvider
         'type' => [
             \App\Repositories\Contracts\TypeInterface::class,
             \App\Repositories\Eloquent\TypeRepository::class,
-        ]
+        ],
+        'campaign' => [
+            \App\Repositories\Contracts\CampaignRepositoryInterface::class,
+            \App\Repositories\Eloquent\CampaignRepository::class,
+        ],
     ];
 
     /**

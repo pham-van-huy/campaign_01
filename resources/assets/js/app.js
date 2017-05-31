@@ -4,7 +4,6 @@ import store from './store'
 import VueI18n from 'vue-i18n'
 import messages from './locale'
 import components from './components'
-
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({
@@ -13,7 +12,7 @@ const i18n = new VueI18n({
     messages
 })
 
-const app = new Vue({
+var App = window.App = new Vue({
     el: '#app',
     store,
     i18n,

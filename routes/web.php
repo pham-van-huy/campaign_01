@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layouts.frontend');
 });
 
 // Server response to url image files
@@ -29,8 +29,9 @@ Route::group(['namespace' => 'Auth', 'prefix' => '/auth', 'middleware' => 'guest
 });
 
 Route::group(['namespace' => 'Frontend'], function () {
-
     Route::get('/active/{token}', 'UserController@active');
 
     Route::get('/user', 'UserController@index');
 });
+Route::get('campaign/{campaignId}/member', 'Frontend\CampainController@listMember');
+Route::get('campaign/{campaignId}', 'Frontend\CampainController@show');
