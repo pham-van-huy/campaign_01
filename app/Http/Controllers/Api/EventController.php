@@ -143,6 +143,7 @@ class EventController extends ApiController
                         return $query->with('user')->latest();
                     },
                     'donationType.quality',
+                    'expenses.products',
                 ])
                 ->get();
             $this->compacts['manage'] = $this->user->can('manage', $event);
