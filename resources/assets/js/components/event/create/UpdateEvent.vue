@@ -86,7 +86,7 @@
                                     <a
                                         href="javascript:void(0)"
                                         class="remove-icon delete-old-goal"
-                                        @click="comfirmDelete(goal.goals_id)"
+                                        @click="comfirmDelete(goal.id)"
                                         v-if="!goal.donations.length">
                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
@@ -423,7 +423,7 @@
                         this.goals = res.data.goals
                         this.goals.forEach(goal => {
                             let donation = {
-                                id: goal.goals_id,
+                                id: goal.id,
                                 goal: goal.goal
                             }
                             this.dataUpdate.goalUpdates.push(donation)

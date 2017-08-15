@@ -26,18 +26,34 @@ class GoalRepository extends BaseRepository implements GoalInterface
 
     public function listGoal($event)
     {
-        return $event
-            ->goals()
-            ->join('donation_types', 'goals.donation_type_id', '=', 'donation_types.id')
-            ->with([
-                'donations' => function ($query) {
-                    return $query->with('user')->latest();
-                },
-                'donationType.quality',
-                'expenses.products',
-            ])
-            ->select('goals.id as goals_id', 'goals.*', 'donation_types.*')
-            ->orderBy('donation_types.name')
-            ->get();
+        // $result = $event
+        //     ->goals()
+        //     ->with([
+        //         'donations',
+        //         'donationType',
+        //         'donationType.quality',
+        //         'expenses.products',
+        //     ])
+        //     ->get();
+        // dd($result);
+
+        $goals = Goal::where('event_id', 61)->get()->sortBy('goal');
+
+        dd($event->goals, Goal::where('event_id', 61)->get());
+
+        // $data = $event
+        //     ->goals;
+            // ->with([
+            //     'donations',
+            //     'donationType',
+            //     'donationType.quality',
+            //     'expenses.products',
+            // ])->get();
+
+        // $goals->sortByDesc(function($goals) {
+        //     return (int) ($goals->id);
+        // });
+
+        return ($goals->values()->all()) ;
     }
 }

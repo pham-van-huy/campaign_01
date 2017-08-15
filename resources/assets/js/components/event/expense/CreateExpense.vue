@@ -144,7 +144,7 @@
         methods: {
             selected(value, id) {
                 this.goal = this.dataGoals.filter(dataGoal => dataGoal.donation_type.name == value)[0]
-                this.newExpense.goal_id = this.goal.id
+                this.newExpense.goal_id = this.goal.goals_id
                 this.newExpense.cost = this.newExpense.cost === null ? '' : null
                 this.newExpense.reason = this.newExpense.reason || null
             },
