@@ -103,6 +103,7 @@ Route::group(['namespace' => 'Api', 'middleware' => ['xssProtection']], function
             Route::get('search-members-invite/{campaignId}', 'CampaignController@searchMemberToInvites');
             Route::post('invite-user/{campaignId}/{userId}', 'CampaignController@inviteUser');
             Route::post('accept/{campaignId}', 'CampaignController@acceptInvitation');
+            Route::resource('goal', 'CampaignGoalController', ['only' => ['store']]);
         });
 
         Route::resource('campaign', 'CampaignController', ['only' => ['store', 'update', 'destroy', 'show', 'edit']]);

@@ -70,11 +70,6 @@ class Event extends BaseModel
         return $this->morphMany(Activity::class, 'activitiable');
     }
 
-    public function goals()
-    {
-        return $this->hasMany(Goal::class);
-    }
-
     public function donations()
     {
         return $this->hasMany(Donation::class);

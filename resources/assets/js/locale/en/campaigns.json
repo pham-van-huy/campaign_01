@@ -109,5 +109,10 @@
     "invite_user": "Invite user",
     "accept": "Accept",
     "no_data": "No data",
-    "no_campaigns_are_closed": "No campaigns are closed"
+    "no_campaigns_are_closed": "No campaigns are closed",
+    "donate": "Donations",
+    "goal": {
+        "create": "Create Goal"
+
+    }
 }

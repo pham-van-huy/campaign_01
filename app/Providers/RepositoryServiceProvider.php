@@ -79,6 +79,10 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\Contracts\SettingInterface::class,
             \App\Repositories\Eloquent\SettingRepository::class,
         ],
+        'campaignGoal' => [
+            \App\Repositories\Contracts\CampaignGoalInterface::class,
+            \App\Repositories\Eloquent\CampaignGoalRepository::class,
+        ],
     ];
 
     /**

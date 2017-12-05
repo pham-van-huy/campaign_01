@@ -56,24 +56,6 @@
                 <span v-show="errors.has('description')" class="material-input text-danger">
                     {{ errors.first('description') }}
                 </span>
-
-                <div class="wrap-donation">
-                    <p>{{ $t('form.title.add_donation') }}
-                        <i class="fa fa-plus-square icon-donation" aria-hidden="true" id="add-donation" @click="addDonation">
-                        </i>
-                    </p>
-                    <donations
-                        v-for="(donation, index) in donations"
-                        :donation="donation"
-                        :index="index"
-                        :key="index"
-                        :visible="visible"
-                        @add-instance-validate="addErrors"
-                        @update-row-donation="updateGoal"
-                        @delete-donation="deleteDonation(index)">
-                    </donations>
-                </div>
-
                 <div class="form-group label-floating">
                     <p>{{ $t('form.title.upload_images') }}</p>
                     <div :class="{ 'upload-file': true, 'has-error-upload': hasErrorFiles }">
@@ -119,7 +101,6 @@
     import * as VueGoogleMaps from 'vue2-google-maps'
     import Dropzone from 'vue2-dropzone'
     import Vue from 'vue'
-    import Donations from './Donations.vue'
     import SettingDate from '../../libs/SettingDate.vue'
     import axios from 'axios'
     import { config } from '../../../config'
@@ -145,10 +126,6 @@
             startDate: '',
             endDate: '',
             flag: true,
-            donations: [
-                { type : '', goal: '', quality: ''}
-            ],
-            errorBags: {},
             newEvent : {
                 title: '',
                 campaign_id: '',
@@ -158,7 +135,6 @@
                 settings: [],
                 files: [],
                 address: ' ',
-                donations: []
             },
             hasErrorFiles: false,
             accessToken: `Bearer ${localStorage.getItem('access_token')}`
@@ -168,9 +144,6 @@
             this.loadedMaps(this.newEvent)
         },
         methods: {
-            addErrors(index, value) {
-                this.errorBags[index] = value
-            },
 
             setPlace(place) {
                 this.setLocation(this.newEvent, place)
@@ -179,52 +152,6 @@
             updatePosition(event) {
                 const latLng = event.latLng.toJSON()
                 this.setGeocoder(this.newEvent, latLng)
-            },
-
-            addDonation() {
-                let donation = { type : '', goal: '', quality: ''}
-                this.donations.push(donation)
-                this.visible = false
-            },
-
-            // filter danation before request to sever
-            getDonation() {
-                this.newEvent.donations = []
-
-                for (let donation of this.donations) {
-                    let flag = true
-
-                    for (let key in donation) {
-                        if (!donation[key]) {
-                            flag = false
-                            break
-                        }
-                    }
-
-                    if (flag) {
-                        this.newEvent.donations.push(donation)
-                    }
-                }
-            },
-
-            deleteDonation(index) {
-                this.donations.length > 1 && this.donations.splice(index, 1)
-
-                this.errorBags.length > 1 && this.errorBags.splice(index, 1)
-
-                if (this.donations.length === 1) {
-                    this.visible = true
-                }
-            },
-
-            updateGoal(newValue) {
-                // mix <=> key: type, goal, quality
-                // key <=> key of newValue that children emitted
-                const [key, mix, instanse] = Object.keys(newValue)
-                const index = newValue[key]
-
-                this.errorBags[index] = newValue[instanse]
-                this.donations[index][mix] = newValue[mix]
             },
 
             addSettings() {
@@ -245,9 +172,6 @@
             createEvent() {
                 this.hasErrorFiles = this.$refs.myVueDropzone.getRejectedFiles().length
                 this.$validator.validateAll().then((result) => {
-                    if (!this.flag || (Object.keys(this.errorBags).length > 1 && this.hasErrorDonation())) {
-                        return
-                    }
 
                     if (!this.hasErrorFiles) {
                         this.$refs.myVueDropzone.processQueue()
@@ -260,18 +184,6 @@
                 .catch(() => {})
             },
 
-            hasErrorDonation() {
-                let errorDonations = []
-
-                for(let index in this.errorBags) {
-                    // Triger validation children donation
-                    this.errorBags[index].validateAll().catch(() => {})
-                    errorDonations.push(this.errorBags[index].getErrors())
-                }
-
-                return !errorDonations.every(item => !item.count())
-            },
-
             deleteFile(file, error, xhr) {
                 this.hasErrorFiles = this.$refs.myVueDropzone.getRejectedFiles().length
             },
@@ -281,7 +193,6 @@
 
                 if (!this.hasErrorFiles) {
                     this.newEvent.campaign_id = this.pageId
-                    this.getDonation()
                     this.addSettings()
                     post('event/create', this.newEvent)
                         .then(res => {
@@ -310,7 +221,6 @@
         },
 
         components: {
-            Donations,
             Dropzone,
             SettingDate
         }
@@ -320,30 +230,6 @@
 <style lang="scss">
     .create-event {
         width: 80% !important;
-        #add-donation {
-            &:hover {
-                color: #08ddc1;
-                cursor: pointer;
-            }
-        }
-        .store-icon {
-            padding-left: 5px;
-            margin-bottom: 25px;
-        }
-        .icon-donation {
-            font-size: 1.5em !important;
-            padding-left: 5px;
-        }
-        #delete-donation {
-            margin-top: 1em;
-            &:hover {
-                color: #ff5e3a;
-                cursor: pointer;
-            }
-        }
-        .visible:hover {
-            cursor: not-allowed !important;
-        }
         .upload-file {
             min-height: 300px;
             form {

@@ -22,7 +22,6 @@ class Donation extends BaseModel
     protected $fillable = [
         'id',
         'user_id',
-        'event_id',
         'value',
         'campaign_id',
         'goal_id',
@@ -55,11 +54,6 @@ class Donation extends BaseModel
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function event()
-    {
-        return $this->belongsTo(Event::class);
     }
 
     public function campaign()

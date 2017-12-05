@@ -102,5 +102,9 @@
     "invite_user": "Mời bạn bè",
     "accept": "Chấp nhận",
     "no_data": "Không có dữ liệu",
-    "no_campaigns_are_closed": "Không có chiến dịch nào được đóng."
+    "no_campaigns_are_closed": "Không có chiến dịch nào được đóng.",
+    "donate": "Quyên góp",
+    "goal": {
+        "create": "Tạo mục tiêu của quên góp"
+    }
 }

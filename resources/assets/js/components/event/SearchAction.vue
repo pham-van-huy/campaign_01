@@ -21,13 +21,6 @@
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                                 {{ $t('events.create_action') }}
                             </button>
-                            <button
-                                v-if="!event.deleted_at && event.complete_percent.length"
-                                class="btn btn-primary btn-md-2 bg-purple"
-                                @click.prevent="showModal = true">
-                                <i class="fa fa-gift size-md"></i>
-                                {{ $t('events.donation.donate') }}
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -47,30 +40,6 @@
                         exact-active-class="active"
                         tag="li">
                         <a href="#">{{ $t('events.show_info') }}</a>
-                    </router-link>
-                    <router-link
-                        v-if="event.complete_percent.length"
-                        :to="{ name: 'event.donation' }"
-                        class="cat-list__item"
-                        active-class="active"
-                        tag="li">
-                        <a href="">{{ $t('events.donation.donation_details') }}</a>
-                    </router-link>
-                    <router-link
-                        v-if="event.complete_percent.length && event.manage"
-                        :to="{ name: 'event.create-donation' }"
-                        class="cat-list__item"
-                        active-class="active"
-                        tag="li">
-                        <a href="">{{ $t('events.donation.import_donation') }}</a>
-                    </router-link>
-                    <router-link
-                        v-if="event.complete_percent.length"
-                        :to="{ name: 'expense.list' }"
-                        class="cat-list__item"
-                        active-class="active"
-                        tag="li">
-                        <a href="">{{ $t('events.expenses.expense') }}</a>
                     </router-link>
                 </ul>
             </div>

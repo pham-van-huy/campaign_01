@@ -32,8 +32,8 @@ class EventController extends ApiController
     private $redis;
 
     public function __construct(
-        EventInterface $eventRepository,
         QualityInterface $qualityRepository,
+        EventInterface $eventRepository,
         CampaignInterface $campaignRepository,
         DonationTypeInterface $donationTypeRepository,
         ActionInterface $actionRepository,
@@ -41,9 +41,9 @@ class EventController extends ApiController
         ExpenseInterface $expenseRepository
     ) {
         parent::__construct();
+        $this->eventRepository = $eventRepository;
         $this->qualityRepository = $qualityRepository;
         $this->campaignRepository = $campaignRepository;
-        $this->eventRepository = $eventRepository;
         $this->donationTypeRepository = $donationTypeRepository;
         $this->actionRepository = $actionRepository;
         $this->goalRepository = $goalRepository;
@@ -55,7 +55,6 @@ class EventController extends ApiController
         $input['data_event'] = $request->intersect('campaign_id', 'title', 'description', 'longitude', 'latitude', 'address');
         $input['data_event']['user_id'] = $this->user->id;
         $input['other'] = $request->only('settings', 'files');
-        $input['donations'] = $this->qualityRepository->getOrCreate($request->get('donations'));
         $input['campaign'] = $this->campaignRepository->find($input['data_event']['campaign_id']);
 
         return $this->doAction(function () use ($input) {
@@ -67,10 +66,12 @@ class EventController extends ApiController
 
             $this->compacts['event'] = $result['event'];
             $this->redis = LRedis::connection();
+
             $feature = $input['campaign']
                 ->settings()
                 ->where('key', config('settings.campaigns.status'))
                 ->first();
+
             $this->redis->publish('createEvent', json_encode([
                 'info' => $this->compacts['event']->load('campaign', 'media'),
                 'hashtag' => $input['campaign']->hashtag,
@@ -82,7 +83,7 @@ class EventController extends ApiController
                     : config('settings.value_of_settings.status.private'),
             ]));
 
-            foreach($result['listReceiver'] as $receiver) {
+            foreach ($result['listReceiver'] as $receiver) {
                 $this->sendNotification(
                     $receiver->id,
                     $result['event'],
@@ -103,7 +104,6 @@ class EventController extends ApiController
 
         return $this->getData(function () use ($event) {
             $this->compacts['event'] = $this->eventRepository->getDetailEvent($event->id);
-            $this->compacts['goals'] = $this->goalRepository->getGoalFromEvent($event);
         });
     }
 
@@ -117,10 +117,7 @@ class EventController extends ApiController
             'settings',
             'address',
             'files',
-            'mediaDels',
-            'goalDels',
-            'goalUpdates',
-            'goalAdds'
+            'mediaDels'
         );
 
         $event = $this->eventRepository->findOrFail($id);
@@ -130,15 +127,6 @@ class EventController extends ApiController
         }
 
         return $this->doAction(function () use ($event, $data) {
-            if (count($data['goalAdds'])) {
-                $data['goalAdds'] = $this->qualityRepository->getOrCreate($data['goalAdds']);
-            }
-
-            if (count($data['goalUpdates'])) {
-                $this->goalRepository->updateManyRow($data['goalUpdates']);
-            }
-
-            $data = array_except($data, ['goalUpdates']);
             $this->compacts['event'] = $this->eventRepository->update($event, $data);
         });
     }
@@ -177,20 +165,6 @@ class EventController extends ApiController
 
             $this->compacts['actions'] = $this->actionRepository
                 ->getActionPaginate($event->actions()->withTrashed(), $this->user->id);
-
-            $this->compacts['goals'] = $event
-                ->goals()
-                ->withTrashed()
-                ->select('id', 'donation_type_id', 'goal')
-                ->with([
-                    'donations' => function ($query) {
-                        return $query->with('user')->latest();
-                    },
-                    'donationType.quality' => function ($query) {
-                        $query->withTrashed();
-                    },
-                ])
-                ->get();
             $this->compacts['manage'] = $this->user->can('manage', $event);
             $this->compacts['member'] = $this->user->can('member', $event);
             $this->compacts['checkLikeEvent'] = $this->eventRepository->checkLike($event, $this->user->id);

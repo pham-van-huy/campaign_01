@@ -28,7 +28,8 @@
         "quantity": "Quantity",
         "quality": "Quality",
         "type": "Type",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "title": "Title"
     },
     "title": {
         "login": "Login to your Account",

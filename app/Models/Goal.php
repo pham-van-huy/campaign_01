@@ -14,7 +14,6 @@ class Goal extends BaseModel
     }
 
     protected $fillable = [
-        'event_id',
         'donation_type_id',
         'goal',
     ];
@@ -28,11 +27,6 @@ class Goal extends BaseModel
     ];
 
     protected $dates = ['deleted_at'];
-
-    public function event()
-    {
-        return $this->belongsTo(Event::class);
-    }
 
     public function donationType()
     {

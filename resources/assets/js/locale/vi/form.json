@@ -28,7 +28,8 @@
         "quantity": "Số lượng",
         "quality": "Đơn vị",
         "type": "Loại",
-        "confirm": "Xác nhận"
+        "confirm": "Xác nhận",
+        "title": "Tiêu đề"
     },
     "title": {
         "login": "Đăng nhập vào tài khoản của bạn",

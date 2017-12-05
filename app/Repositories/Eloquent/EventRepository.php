@@ -60,7 +60,6 @@ class EventRepository extends BaseRepository implements EventInterface
 
     public function create($data)
     {
-        $donation = $data['donations'];
         $dataMedias = $this->createDataMedias($data['other']['files']);
         $event = $this->model->create($data['data_event']);
 
@@ -81,14 +80,6 @@ class EventRepository extends BaseRepository implements EventInterface
 
         if ($dataMedias) {
             $createMedias = $event->media()->createMany($dataMedias);
-        }
-
-        if ($donation) {
-            $goals = $event->goals()->createMany($donation);
-
-            if (!$goals) {
-                throw new NotFoundException('Have error when create model');
-            }
         }
 
         $listReceiver = $data['campaign']->activeUsers
@@ -119,12 +110,6 @@ class EventRepository extends BaseRepository implements EventInterface
 
     public function update($event, $inputs)
     {
-        $goals = $event->goals;
-
-        if (count($inputs['goalAdds'])) {
-            $event->goals()->createMany($inputs['goalAdds']);
-        }
-
         if (count($inputs['mediaDels'])) {
             $media = $event->media()->whereIn('media.id', $inputs['mediaDels']);
             $fileDelete = $media->pluck('url_file');
