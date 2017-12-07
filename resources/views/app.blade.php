@@ -27,6 +27,10 @@
                 'actions' => config('settings.actions'),
                 'value' => config('settings.value_of_settings'),
                 'imageEventDefault' => config('settings.image_event_default'),
+                'donations' => [
+                    'accept' => config('settings.donations.accept'),
+                    'not_accept' => config('settings.donations.not_accept'),
+                ]
             ],
             'pagination' => [
                 'follow' => config('settings.pagination.follow'),

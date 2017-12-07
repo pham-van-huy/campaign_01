@@ -7,6 +7,7 @@ use App\Repositories\Contracts\RoleInterface;
 use App\Repositories\Contracts\TagInterface;
 use App\Repositories\Contracts\EventInterface;
 use App\Repositories\Contracts\CommentInterface;
+use App\Repositories\Contracts\CampaignGoalInterface;
 use App\Repositories\Contracts\ActionInterface;
 use App\Repositories\Contracts\UserInterface;
 use App\Exceptions\Api\NotFoundException;
@@ -32,6 +33,7 @@ class CampaignController extends ApiController
     private $actionRepository;
     private $userRepository;
     private $redis;
+    private $campaignGoalRepository;
 
     public function __construct(
         CampaignInterface $campaignRepository,
@@ -40,7 +42,8 @@ class CampaignController extends ApiController
         EventInterface $eventRepository,
         CommentInterface $commentRepository,
         ActionInterface $actionRepository,
-        UserInterface $userRepository
+        UserInterface $userRepository,
+        CampaignGoalInterface $campaignGoalRepository
     ) {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -50,6 +53,7 @@ class CampaignController extends ApiController
         $this->commentRepository = $commentRepository;
         $this->actionRepository = $actionRepository;
         $this->userRepository = $userRepository;
+        $this->campaignGoalRepository = $campaignGoalRepository;
     }
 
     public function store(CampaignRequest $request)
@@ -196,7 +200,11 @@ class CampaignController extends ApiController
             $this->compacts['events'] = $this->eventRepository->getEvent($campaign->events(), $this->user->id);
             $this->compacts['checkLiked'] = $this->eventRepository->checkLike($campaign->events(), $this->user->id);
             $this->compacts['show_campaign'] = $this->campaignRepository->getCampaign($campaign, $this->user->id);
-            $this->compacts['members'] = $this->campaignRepository->getMembers($campaign, Campaign::APPROVED, $roleIdBlocked);
+            $this->compacts['members'] = $this->campaignRepository
+                ->getMembers($campaign, Campaign::APPROVED, $roleIdBlocked);
+            $this->compacts['goals'] = $this->campaignGoalRepository->getGoal($campaign->campaignGoals());
+            $this->compacts['checkLikedGoal'] = $this->campaignGoalRepository
+                ->checkLike($campaign->campaignGoals(), $this->user->id);
         });
     }
 
@@ -235,7 +243,7 @@ class CampaignController extends ApiController
 
         return $this->getData(function () use ($campaign) {
             $this->compacts['events'] = $this->eventRepository->getEvent($campaign->events(), $this->user->id);
-            $this->compacts['checkLiked'] = $this->eventRepository->checkLike($campaign->events(), $this->user->id);
+            $this->compacts['goals'] = $this->campaignGoalRepository->getGoal($campaign->campaignGoals());
         });
     }
 

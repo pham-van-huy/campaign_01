@@ -5,22 +5,30 @@ export default {
         state.campaign = data.show_campaign.campaign
         state.listMembers.members = data.members
         let events = []
-        events.data = data.events.data
-        events.total = data.events.inforPage.total
-        events.last_page = data.events.inforPage.last_page
-        events.current_page = data.events.inforPage.current_page
+        let list = [...data.events.data, ...data.goals.data]
+        events.data = _.sortBy(list, function(item) { return new moment(item.created_at, 'YYYY-MM-DD HH:mm:ss'); }).reverse()
+        events.total = data.events.inforPage.total >= data.goals.inforPage.total ?
+            data.events.inforPage.total : data.goals.inforPage.total
+        events.last_page = data.events.inforPage.total >= data.goals.inforPage.total ?
+            data.events.inforPage.last_page : data.goals.inforPage.last_page
+        events.current_page = data.events.inforPage.total >= data.goals.inforPage.total ?
+            data.events.inforPage.current_page : data.goals.inforPage.current_page
 
         state.events = events
         state.checkLiked = data.checkLiked
+        state.checkLikedGoal = data.checkLikedGoal
         state.tags = data.show_campaign.tags
     },
 
-    [types.FETCH_DATA](state, events) {
+    [types.FETCH_DATA](state, data) {
         let dataEvents = state.events
-        events.data = [...dataEvents.data, ...events.data]
-        events.total = events.inforPage.total
-        events.last_page = events.inforPage.last_page
-        events.current_page = events.inforPage.current_page
+        let list = [...data.events.data, ...data.goals.data]
+        let sorted = _.sortBy(list, function(item) { return new moment(item.created_at, 'YYYY-MM-DD HH:mm:ss'); }).reverse()
+        let events = []
+        events.data = [...dataEvents.data, ...sorted]
+        events.total = data.events.inforPage.total
+        events.last_page = data.events.inforPage.last_page
+        events.current_page = data.events.inforPage.current_page
         state.events = events
     },
 

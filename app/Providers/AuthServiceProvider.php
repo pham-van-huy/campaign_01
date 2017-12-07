@@ -12,6 +12,7 @@ use App\Models\Comment;
 use App\Models\Donation;
 use App\Models\User;
 use App\Models\Activity;
+use App\Models\CampaignGoal;
 use App\Policies\CampaignPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\ActionPolicy;
@@ -19,6 +20,7 @@ use App\Policies\DonationPolicy;
 use App\Policies\CommentPolicy;
 use App\Policies\ActivityPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\CampaignGoalPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         Comment::class => CommentPolicy::class,
         Donation::class => DonationPolicy::class,
         Activity::class => ActivityPolicy::class,
+        CampaignGoal::class => CampaignGoalPolicy::class,
     ];
 
     /**

@@ -106,5 +106,11 @@
     "donate": "Quyên góp",
     "goal": {
         "create": "Tạo mục tiêu của quên góp"
+    },
+    "goal_donate": {
+        "type": "Loại",
+        "goal": "Mục tiêu",
+        "received": "Đã nhận",
+        "waitting": "Đang chờ"
     }
 }
