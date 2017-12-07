@@ -106,5 +106,11 @@
     "goal": {
         "create": "Create Goal"
 
+    },
+    "goal_donate": {
+        "type": "Type",
+        "goal": "Goal",
+        "received": "Received",
+        "waitting": "Waitting"
     }
 }

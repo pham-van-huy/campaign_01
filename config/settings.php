@@ -8,6 +8,7 @@ return [
     'paginate_notification' => 5,
     'paginate_comment' => 2,
     'paginate_event' => 4,
+    'paginate_goal' => 4,
     'flag_join' => 'join',
     'locale' => ['vi', 'en', 'ja'],
     'campaigns' => [
@@ -74,5 +75,9 @@ return [
     ],
     'email' => [
         'logo' => 'http://campaign.framgia.vn/images/logo.png',
+    ],
+    'donations' => [
+        'accept' => App\Models\Donation::ACCEPT,
+        'not_accept' => App\Models\Donation::NOT_ACCEPT,
     ],
 ];

@@ -114,6 +114,11 @@ class Campaign extends BaseModel
         return $this->hasMany(Donation::class);
     }
 
+    public function campaignGoals()
+    {
+        return $this->hasMany(CampaignGoal::class);
+    }
+
     public function getUserByRole($roles)
     {
         $roles = is_array($roles) ? $roles : [$roles];

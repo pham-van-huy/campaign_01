@@ -31,10 +31,39 @@ class CampaignGoalRepository extends BaseRepository implements CampaignGoalInter
         }
 
         $campaignGoal->activities()->create([
-            'user_id' => $data['user']->id,
+            'user_id' => $data['campaignGoal']['user_id'],
             'name' => Activity::CREATE,
         ]);
 
         return true;
+    }
+
+    public function getGoal($goal)
+    {
+        $inforGoals = $goal->withTrashed()
+            ->with([
+                'user',
+                'goals' => function ($query) {
+                    $query->withTrashed()->with(['donationType.quality', 'donations']);
+                },
+            ])
+            ->getLikes()
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('settings.paginate_goal'));
+
+        $goals = $inforGoals->each(function ($item) {
+            $item->load(['comments' => function ($query) {
+                $query->withTrashed()
+                    ->getLikes()
+                    ->where('parent_id', config('settings.comment_parent'))
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(config('settings.paginate_comment'), ['*'], 1);
+            }]);
+        });
+
+        return [
+            'inforPage' => $inforGoals,
+            'data' => $goals,
+        ];
     }
 }

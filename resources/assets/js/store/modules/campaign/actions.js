@@ -34,7 +34,7 @@ export const fetchData = ({ commit }, data) => {
     if (data.pageNumberEvent >= (parseInt(data.pageCurrent) + 1)) {
         get(`campaign/${data.campaignId}/timeline/event?page=${(parseInt(data.pageCurrent) + 1)}`)
             .then(res => {
-                commit(types.FETCH_DATA, res.data.events)
+                commit(types.FETCH_DATA, res.data)
                 commit(types.LOADING, false)
             })
     } else {

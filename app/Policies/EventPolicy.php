@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Role;
-use App\Models\Campaign;
 
 class EventPolicy extends BasePolicy
 {

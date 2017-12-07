@@ -15,9 +15,13 @@ class CreateCampaignGoalsTable extends Migration
     {
         Schema::create('campaign_goals', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->index();
             $table->integer('campaign_id')->index();
             $table->string('title');
             $table->text('description');
+            $table->integer('number_of_comments')->default(0);
+            $table->integer('number_of_likes')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

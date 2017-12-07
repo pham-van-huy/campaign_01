@@ -27,7 +27,7 @@ class CampaignGoalController extends ApiController
     public function store(CampaignGoalRequest $request)
     {
         $data['campaignGoal'] = $request->intersect('campaign_id', 'title', 'description');
-        $data['user'] = $this->user;
+        $data['campaignGoal']['user_id'] = $this->user->id;
         $campaign = $this->campaignRepository->findOrFail($data['campaignGoal']['campaign_id']);
         $data['goals'] = $this->qualityRepository->getOrCreate($request->get('goals'));
 
