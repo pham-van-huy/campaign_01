@@ -120,5 +120,9 @@
         "goal": "Goal",
         "received": "Received",
         "waitting": "Waitting"
+    },
+    "donations": {
+        "comments": "Comments",
+        "donates": "Donate"
     }
 }

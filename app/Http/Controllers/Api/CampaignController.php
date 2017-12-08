@@ -202,7 +202,7 @@ class CampaignController extends ApiController
             $this->compacts['show_campaign'] = $this->campaignRepository->getCampaign($campaign, $this->user->id);
             $this->compacts['members'] = $this->campaignRepository
                 ->getMembers($campaign, Campaign::APPROVED, $roleIdBlocked);
-            $this->compacts['goals'] = $this->campaignGoalRepository->getGoal($campaign->campaignGoals());
+            $this->compacts['goals'] = $this->campaignGoalRepository->getGoals($campaign->campaignGoals());
             $this->compacts['checkLikedGoal'] = $this->campaignGoalRepository
                 ->checkLike($campaign->campaignGoals(), $this->user->id);
         });
@@ -243,7 +243,7 @@ class CampaignController extends ApiController
 
         return $this->getData(function () use ($campaign) {
             $this->compacts['events'] = $this->eventRepository->getEvent($campaign->events(), $this->user->id);
-            $this->compacts['goals'] = $this->campaignGoalRepository->getGoal($campaign->campaignGoals());
+            $this->compacts['goals'] = $this->campaignGoalRepository->getGoals($campaign->campaignGoals());
         });
     }
 

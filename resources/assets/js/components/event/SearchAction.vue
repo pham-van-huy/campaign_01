@@ -52,7 +52,6 @@
             </template>
             <div class="ui-block-content">
                 <template v-for="(goal, i) in event.complete_percent">
-
                     <span>{{ $t('events.donation.receive') }} {{ donateInfo[i] }}/{{ goal.goal }} {{ goal.donation_type.quality.name }} {{ goal.donation_type.name }}</span>
                     <div class="progress">
                         <div
@@ -181,12 +180,11 @@
                         event_id: this.pageId,
                         goal_id: this.goal_id,
                         value: this.donate
+                    }).then(res => {
+                        this.showModal = false
+                        this.showMessage = true
+                        EventBus.$emit('newDonation')
                     })
-                        .then(res => {
-                            this.showModal = false
-                            this.showMessage = true
-                            EventBus.$emit('newDonation')
-                        })
                 })
             },
 

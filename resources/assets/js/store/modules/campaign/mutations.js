@@ -138,4 +138,17 @@ export default {
         state.campaign = []
         state.campaign = campaign
     },
+
+    [types.UPDATE_DONATION](state, data) {
+        console.log(state.events)
+        let temp = state.events
+        state.events = null
+        temp.data[data.index] = data.newData
+        state.events = temp
+        console.log(state.events)
+        // let event = state.event
+        // event.complete_percent = data
+        // state.event = []
+        // state.event = event
+    },
 };

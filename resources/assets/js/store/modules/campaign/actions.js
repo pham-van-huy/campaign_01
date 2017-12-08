@@ -224,6 +224,18 @@ export const listMember = ({ commit }, data) => {
     }
 };
 
+export const update_donate = ({ commit }, payload) => {
+    return new Promise((resolve, reject) => {
+        post('donation/create-many', payload.dataPost)
+            .then(res => {
+                commit(types.UPDATE_DONATION, {newData: res.data.newGoal, index: payload.index})
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+}
+
 export default {
     campaignDetail,
     fetchData,
@@ -241,5 +253,6 @@ export default {
     updateEventsCampaign,
     inviteUser,
     acceptCampaign,
-    listMember
+    listMember,
+    update_donate
 };

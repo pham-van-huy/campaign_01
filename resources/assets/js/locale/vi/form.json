@@ -59,7 +59,8 @@
         "cancel": "Hủy",
         "password": "Gữi lời nhắc",
         "reset_password": "Đặt lại mật khẩu",
-        "no": "Không"
+        "no": "Không",
+        "reset": "Xóa"
     },
     "quote": {
         "confirm_account": "Bạn không có tài khoản?",

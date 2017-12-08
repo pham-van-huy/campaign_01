@@ -48,6 +48,7 @@ export default {
         addComments: _.debounce(function (e) {
             if (e.keyCode === 13 && !e.shiftKey) {
                 if (this.comment.content.trim() != '') {
+                     console.log(status)
                     this.addComment({
                         modelId: this.modelId,
                         commentParentId: this.commentParentId,
@@ -56,10 +57,14 @@ export default {
                         flagAction: this.flagAction,
                     })
                     .then(status => {
+                     console.log(status)
+
                         this.comment.content = ''
                         e.target.style.height = "5px"
                     })
                     .catch(err => {
+                     console.log(err)
+
                         //
                     })
                 } else {

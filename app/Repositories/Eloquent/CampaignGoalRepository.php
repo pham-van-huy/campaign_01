@@ -38,13 +38,13 @@ class CampaignGoalRepository extends BaseRepository implements CampaignGoalInter
         return true;
     }
 
-    public function getGoal($goal)
+    public function getGoals($goals)
     {
-        $inforGoals = $goal->withTrashed()
+        $inforGoals = $goals->withTrashed()
             ->with([
                 'user',
                 'goals' => function ($query) {
-                    $query->withTrashed()->with(['donationType.quality', 'donations']);
+                    $query->withTrashed()->with(['donationType.quality', 'donations.user']);
                 },
             ])
             ->getLikes()
@@ -65,5 +65,22 @@ class CampaignGoalRepository extends BaseRepository implements CampaignGoalInter
             'inforPage' => $inforGoals,
             'data' => $goals,
         ];
+    }
+
+    public function getOneGoal($goalId) {
+        return $this->withTrashed()
+            ->with([
+                'user',
+                'goals.donationType.quality',
+                'goals.donations.user',
+                'comments' => function ($query) {
+                    $query->withTrashed()
+                    ->getLikes()
+                    ->where('parent_id', config('settings.comment_parent'))
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(config('settings.paginate_comment'), ['*'], 1);
+                },
+            ])
+            ->find($goalId);
     }
 }

@@ -8,6 +8,8 @@ use App\Http\Requests\DonationRequest;
 use App\Exceptions\Api\UnknowException;
 use App\Repositories\Contracts\EventInterface;
 use App\Repositories\Contracts\DonationInterface;
+use App\Repositories\Contracts\CampaignInterface;
+use App\Repositories\Contracts\CampaignGoalInterface;
 use App\Notifications\AcceptDonation;
 use App\Notifications\UserDonate;
 use Notification;
@@ -16,19 +18,24 @@ class DonationController extends ApiController
 {
     protected $eventRepository;
     protected $donationRepository;
+    protected $campaignGoalRepository;
 
     public function __construct(
         DonationInterface $donationRepository,
-        EventInterface $eventRepository
+        EventInterface $eventRepository,
+        CampaignInterface $campaignRepository,
+        CampaignGoalInterface $campaignGoalRepository
     ) {
         parent::__construct();
         $this->donationRepository = $donationRepository;
         $this->eventRepository = $eventRepository;
+        $this->campaignRepository = $campaignRepository;
+        $this->campaignGoalRepository = $campaignGoalRepository;
     }
 
     public function createMany(Request $request)
     {
-        $event = $this->eventRepository->findOrFail($request->get('event_id'));
+        $campaign = $this->campaignRepository->findOrFail($request->get('campaign_id'));
         $donateData = [];
 
         foreach ($request->get('goal_id') as $key => $value) {
@@ -36,7 +43,7 @@ class DonationController extends ApiController
             $donateData[$key]['value'] = $request->get('value')[$key];
             $donateData[$key]['user_id'] = $request->has('donor_name') ? null : $request->get('user_id', $this->user->id);
             $donateData[$key]['status'] = (bool) ($request->has('status') ? $request->get('status')[$key] : Donation::NOT_ACCEPT);
-            $donateData[$key]['campaign_id'] = $event->campaign_id;
+            $donateData[$key]['campaign_id'] = $request->get('campaign_id');
             $donateData[$key]['donor_name'] = $request->get('donor_name');
             $donateData[$key]['donor_email'] = $request->get('donor_email');
             $donateData[$key]['donor_phone'] = $request->get('donor_phone');
@@ -46,28 +53,19 @@ class DonationController extends ApiController
             $donateData[$key]['created_at'] = $request->get('donated_at')[$key];
         }
 
-        return $this->doAction(function () use ($event, $donateData) {
-            $event->donations()->createMany($donateData);
-            $this->compacts['donations'] = $event
-                ->goals()
-                ->select('id', 'donation_type_id', 'goal')
-                ->with([
-                    'donations' => function ($query) {
-                        return $query->with('user')->latest();
-                    },
-                    'donationType.quality',
-                ])
-                ->get();
+        return $this->doAction(function () use ($campaign, $donateData, $request) {
+            $campaign->donations()->createMany($donateData);
+            $this->compacts['newGoal'] = $this->campaignGoalRepository->getOneGoal($request->campaignGoalId);
 
-            if ($event->user_id != $this->user->id) {
-                Notification::send($event->user, new UserDonate($this->user->id, $event->id));
-                $this->sendNotification(
-                    $event->user_id,
-                    $event,
-                    UserDonate::class,
-                    config('settings.type_notification.event')
-                );
-            }
+            // if ($event->user_id != $this->user->id) {
+            //     Notification::send($event->user, new UserDonate($this->user->id, $event->id));
+            //     $this->sendNotification(
+            //         $event->user_id,
+            //         $event,
+            //         UserDonate::class,
+            //         config('settings.type_notification.event')
+            //     );
+            // }
         });
     }
 

@@ -1,7 +1,7 @@
 <template lang="html">
     <div ref="scrollContainer" id ="data-loadmore">
         <div id="newsfeed-items-grid" v-if="events.total > 0">
-            <div class="ui-block" v-for="event in events.data">
+            <div class="ui-block" v-for="(event, index) in events.data">
                 <div v-if="event.media">
                     <article :class="{
                         'event-close': event.deleted_at,
@@ -114,7 +114,7 @@
                                 <i class="fa fa-gift size-md"></i>
                             </div>
                         </div>
-                        <a class="h2 post-title">
+                        <a class="h2 post-title" @click="seeDetailGoal(event, index)">
                             {{ event.title }}
                         </a>
                         <table class="mt-3 table-bordered table table-sm" v-if="event.goals.length">
@@ -195,6 +195,14 @@
             </div>
             <span>{{ $t('messages.no_event_show') }}</span>
         </div>
+        <show-detail-goal
+            v-if="showGoal"
+            :showGoal.sync="showGoal"
+            :indexOfGoal.sync="indexOfGoal"
+            :checkLikeGoal="checkLikedGoal"
+            :canComment="checkPermission"
+            :roomLike="`campaign${pageId}`">
+        </show-detail-goal>
     </div>
 </template>
 
@@ -207,6 +215,7 @@ import MasterLike from '../like/MasterLike.vue'
 import ListImage from '../home/ListImage.vue'
 import ShareSocialNetwork from '../libs/ShareSocialNetwork.vue'
 import PluginSidebar from '../libs/PluginSidebar.vue'
+import ShowDetailGoal from './donations/Detail.vue'
 
 export default {
     data()
@@ -214,7 +223,10 @@ export default {
         return {
             model: 'event',
             flagComments: [],
-            roomLike: `campaign${this.pageId}`
+            roomLike: `campaign${this.pageId}`,
+            showGoal: false,
+            dataGoal: null,
+            indexOfGoal: null
         }
     },
     computed: {
@@ -260,6 +272,11 @@ export default {
             return _.sumBy(donations, function(donation) {
                 return donation.status == window.Laravel.settings.donations.not_accept ? donation.value : 0
             })
+        },
+        seeDetailGoal(event, index) {
+            this.dataGoal = event
+            this.showGoal = true
+            this.indexOfGoal = index
         }
     },
     components: {
@@ -268,7 +285,8 @@ export default {
         MasterLike,
         ListImage,
         ShareSocialNetwork,
-        PluginSidebar
+        PluginSidebar,
+        ShowDetailGoal
     },
     sockets: {
         createEventSuccess: function (data) {

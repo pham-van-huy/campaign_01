@@ -65,12 +65,17 @@ export const setDetailEvent = ({ commit }, data) => {
     commit(types.SET_DETAIL_EVENT, data)
 };
 
-export const update_donate = ({ commit }, payload) => {
-    post('donation/create-many', payload)
-        .then(res => {
-            commit(types.UPDATE_DONATION, res.data.donations)
-        })
-}
+// export const update_donate = ({ commit }, payload) => {
+//     return new Promise((resolve, reject) => {
+//         post('donation/create-many', payload)
+//             .then(res => {
+//                 commit(types.UPDATE_DONATION, res.data.donations)
+//                 resolve(res)
+//             }).catch(er => {
+//                 reject(err)
+//             })
+//         })
+// }
 
 export const setDonationList = ({ commit }, data) => {
     commit(types.UPDATE_DONATION, data)
@@ -103,7 +108,7 @@ export default {
     search_action,
     like_event,
     setDetailEvent,
-    update_donate,
+    // update_donate,
     change_donate_status,
     removeAction,
     appendOneAction,
